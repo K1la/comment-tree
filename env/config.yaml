@@ -1,0 +1,16 @@
+http_server:
+  address: ":8080"
+  timeout: 10
+  idle_timeout: 30
+
+postgres:
+  host: "db"
+  port: "5432"
+  user: "postgres"
+  name: "postgres-comment-tree"
+  password: "" # set via .env DB_PASSWORD
+
+redis:
+  host: "redis"
+  port: "6379"
+  password: "" # optional, code reads REDIS_PASSWORD from env
