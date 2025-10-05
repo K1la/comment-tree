@@ -19,7 +19,7 @@ func New(handler *handler.Handler) *ginext.Engine {
 		api.POST("/", handler.CreateComment)
 		api.GET("/", handler.GetCommentTree) // use query params ?parent=&search=&limit=&offset
 		api.GET("/:id", handler.GetCommentList)
-		api.GET("/", handler.DeleteComment)
+		api.DELETE("/:id", handler.DeleteComment)
 	}
 
 	// Frontend: serve files from ./web without conflicting wildcard
