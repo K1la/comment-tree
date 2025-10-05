@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CommentTree - Древовидные комментарии</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app">
+        <!-- Header -->
+        <header class="header">
+            <div class="container">
+                <div class="header-content">
+                    <h1 class="logo">
+                        <i class="fas fa-comments"></i>
+                        CommentTree
+                    </h1>
+                    <div class="header-actions">
+                        <button class="btn btn-primary" id="addCommentBtn">
+                            <i class="fas fa-plus"></i>
+                            Новый комментарий
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main">
+            <div class="container">
+                <!-- Search Section -->
+                <section class="search-section">
+                    <div class="search-container">
+                        <div class="search-input-group">
+                            <i class="fas fa-search search-icon"></i>
+                            <input 
+                                type="text" 
+                                id="searchInput" 
+                                placeholder="Поиск по комментариям..."
+                                class="search-input"
+                            >
+                            <button class="btn btn-search" id="searchBtn">
+                                <i class="fas fa-search"></i>
+                                Найти
+                            </button>
+                        </div>
+                        <div class="search-filters">
+                            <select id="sortSelect" class="select">
+                                <option value="created_at_desc">Новые сначала</option>
+                                <option value="created_at_asc">Старые сначала</option>
+                            </select>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Comments Section -->
+                <section class="comments-section">
+                    <div class="comments-header">
+                        <h2>Комментарии</h2>
+                        <div class="comments-stats">
+                            <span id="commentsCount">0 комментариев</span>
+                        </div>
+                    </div>
+                    
+                    <div class="comments-container" id="commentsContainer">
+                        <div class="loading" id="loadingIndicator">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            Загрузка комментариев...
+                        </div>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="pagination" id="pagination" style="display: none;">
+                        <button class="btn btn-secondary" id="prevPageBtn" disabled>
+                            <i class="fas fa-chevron-left"></i>
+                            Предыдущая
+                        </button>
+                        <span class="pagination-info" id="paginationInfo"></span>
+                        <button class="btn btn-secondary" id="nextPageBtn" disabled>
+                            Следующая
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <!-- Add Comment Modal -->
+        <div class="modal" id="addCommentModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="modalTitle">Новый комментарий</h3>
+                    <button class="modal-close" id="closeModalBtn">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="commentForm">
+                        <div class="form-group">
+                            <label for="commentText">Текст комментария</label>
+                            <textarea 
+                                id="commentText" 
+                                name="commentText"
+                                placeholder="Введите ваш комментарий..."
+                                required
+                                rows="4"
+                            ></textarea>
+                        </div>
+                        <input type="hidden" id="parentId" value="">
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="cancelBtn">Отмена</button>
+                    <button type="submit" form="commentForm" class="btn btn-primary" id="submitBtn">
+                        <i class="fas fa-paper-plane"></i>
+                        Отправить
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Delete Confirmation Modal -->
+        <div class="modal" id="deleteModal">
+            <div class="modal-content modal-small">
+                <div class="modal-header">
+                    <h3>Подтверждение удаления</h3>
+                    <button class="modal-close" id="closeDeleteModalBtn">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Вы уверены, что хотите удалить этот комментарий и все ответы к нему?</p>
+                    <p class="text-muted">Это действие нельзя отменить.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="cancelDeleteBtn">Отмена</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn">
+                        <i class="fas fa-trash"></i>
+                        Удалить
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toast Notifications -->
+        <div class="toast-container" id="toastContainer"></div>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>
