@@ -1,5 +1,5 @@
 services:
-  shortener:
+  comment:
     build: .
     command: ./comment-tree
     container_name: comment-tree

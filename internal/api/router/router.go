@@ -17,7 +17,7 @@ func New(handler *handler.Handler) *ginext.Engine {
 	api := e.Group("/api/comments")
 	{
 		api.POST("/", handler.CreateComment)
-		api.GET("/", handler.GetCommentTree) // use query params ?parent=&search=&limit=&offset
+		api.GET("", handler.GetCommentTree) // use query params ?parent=&search=&limit=&offset
 		api.GET("/:id", handler.GetCommentList)
 		api.DELETE("/:id", handler.DeleteComment)
 	}

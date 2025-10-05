@@ -53,6 +53,7 @@ export class CommentApp {
         this.commentsContainer = document.getElementById('commentsContainer');
         this.searchInput = document.getElementById('searchInput');
         this.searchBtn = document.getElementById('searchBtn');
+        this.showAllBtn = document.getElementById('showAllBtn');
         this.sortSelect = document.getElementById('sortSelect');
         this.addCommentBtn = document.getElementById('addCommentBtn');
         this.pagination = document.getElementById('pagination');
@@ -74,6 +75,11 @@ export class CommentApp {
                 this.handleSearch();
             }
         });
+
+        // Show all
+        if (this.showAllBtn) {
+            this.showAllBtn.addEventListener('click', () => this.handleShowAll());
+        }
 
         // Sort
         this.sortSelect.addEventListener('change', (e) => {
@@ -159,6 +165,13 @@ export class CommentApp {
 
     async handleSearch() {
         this.currentSearch = this.searchInput.value.trim();
+        this.currentOffset = 0;
+        await this.loadComments();
+    }
+
+    async handleShowAll() {
+        this.currentSearch = '';
+        if (this.searchInput) this.searchInput.value = '';
         this.currentOffset = 0;
         await this.loadComments();
     }

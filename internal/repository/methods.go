@@ -99,10 +99,13 @@ func (r *Repository) GetComments(ctx context.Context, parentID *uuid.UUID, searc
 	}
 
 	if search != "" {
-		// Use Russian configuration for better relevance with Russian text
-		query += fmt.Sprintf(" AND to_tsvector('russian', content) @@ plainto_tsquery('russian', $%d)", argIdx)
-		args = append(args, search)
-		argIdx++
+		// Match by full-text OR by substring to allow partial matches
+		query += fmt.Sprintf(
+			" AND (to_tsvector('russian', content) @@ plainto_tsquery('russian', $%d) OR content ILIKE $%d)",
+			argIdx, argIdx+1,
+		)
+		args = append(args, search, "%"+search+"%")
+		argIdx += 2
 	}
 
 	allowedSorts := map[string]string{

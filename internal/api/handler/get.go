@@ -57,6 +57,7 @@ func (h *Handler) GetCommentTree(c *ginext.Context) {
 	}
 
 	search := c.Query("search")
+	zlog.Logger.Debug().Str("search", search).Msg("search param")
 	sort := c.DefaultQuery("sort", "created_at_asc")
 
 	limitStr := c.DefaultQuery("limit", "10")
@@ -71,12 +72,14 @@ func (h *Handler) GetCommentTree(c *ginext.Context) {
 	if err != nil || offset < 0 {
 		offset = 0
 	}
+	zlog.Logger.Debug().Str("parentID", parentIDStr).Str("search", search).Str("sort", sort).Int("limit", limit).Int("offset", offset).Msg("query params")
 
 	comments, err := h.service.GetComments(c.Request.Context(), parentID, search, sort, limit, offset)
 	if err != nil {
 		if errors.Is(err, repository.ErrCommentNotFound) {
 			zlog.Logger.Error().Err(err).Msg("comment not found")
-			response.Fail(c.Writer, http.StatusNotFound, fmt.Errorf("no comments found"))
+			//response.Fail(c.Writer, http.StatusNotFound, fmt.Errorf("no comments found"))
+			response.JSON(c.Writer, http.StatusAccepted, comments)
 			return
 		}
 
@@ -84,6 +87,7 @@ func (h *Handler) GetCommentTree(c *ginext.Context) {
 		response.Internal(c.Writer, fmt.Errorf("failed to get comments"))
 		return
 	}
-
-	response.JSON(c.Writer, http.StatusOK, comments)
+	zlog.Logger.Debug().Interface("comments", comments).Msg("get comments")
+	response.OK(c.Writer, comments)
+	//response.JSON(c.Writer, http.StatusOK, comments)
 }

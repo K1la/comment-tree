@@ -52,7 +52,8 @@ export class Comment {
 // Comment tree utilities
 export class CommentTree {
     constructor(comments = []) {
-        this.comments = comments.map(comment => new Comment(comment));
+        // Keep original inputs; buildTree will normalize to Comment instances
+        this.comments = comments;
         this.tree = this.buildTree();
     }
 
@@ -61,21 +62,26 @@ export class CommentTree {
         const commentMap = new Map();
         const rootComments = [];
 
-        // Create comment objects and map them
-        this.comments.forEach(commentData => {
-            const comment = new Comment(commentData);
+        const toComment = (item) => (item instanceof Comment ? item : new Comment(item));
+
+        // Normalize to Comment instances and map by id
+        this.comments.forEach(item => {
+            const comment = toComment(item);
             commentMap.set(comment.id, comment);
         });
 
-        // Build tree structure
-        this.comments.forEach(commentData => {
-            const comment = commentMap.get(commentData.id);
-            
+        // Build tree structure using normalized instances
+        this.comments.forEach(item => {
+            const comment = commentMap.get(toComment(item).id);
+
             if (comment.parentId) {
                 const parent = commentMap.get(comment.parentId);
                 if (parent) {
                     if (!parent.children) parent.children = [];
                     parent.children.push(comment);
+                } else {
+                    // Orphaned child without existing parent in the page results → treat as root
+                    rootComments.push(comment);
                 }
             } else {
                 rootComments.push(comment);
@@ -115,7 +121,7 @@ export class CommentTree {
 
     // Add new comment to tree
     addComment(commentData) {
-        const comment = new Comment(commentData);
+        const comment = commentData instanceof Comment ? commentData : new Comment(commentData);
         this.comments.push(comment);
         
         if (comment.parentId) {
